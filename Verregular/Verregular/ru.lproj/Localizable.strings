@@ -1,0 +1,23 @@
+/* 
+  Localizable.strings
+  Verregular
+
+  Created by Polina Tereshchenko on 31.07.2023.
+  
+*/
+"Select verbs" = "Выбрать глаголы";
+"Train verbs" = "Тренировать глаголы";
+"blow" = "дуть";
+"draw" = "рисовать";
+"eat" = "есть";
+"fall" = "падать";
+"buy" = "покупать";
+"take" = "брать";
+"bring" = "приносить";
+"make" = "делать";
+"cut" = "резать";
+"feel" = "чувствовать";
+"break" = "ломать";
+"set" = "ставить";
+"Verb" = "Глагол";
+"from" = "из";
