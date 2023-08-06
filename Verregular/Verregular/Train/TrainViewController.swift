@@ -55,6 +55,8 @@ final class TrainViewController: UIViewController {
         
         field.borderStyle = .roundedRect
         field.delegate = self
+        field.autocorrectionType = .no
+        field.spellCheckingType = .no
         
         return field
     }()
@@ -64,6 +66,8 @@ final class TrainViewController: UIViewController {
         
         field.borderStyle = .roundedRect
         field.delegate = self
+        field.autocorrectionType = .no
+        field.spellCheckingType = .no
         
         return field
     }()
@@ -73,13 +77,44 @@ final class TrainViewController: UIViewController {
         
         button.layer.cornerRadius = 10
         button.backgroundColor = .systemGray5
-        button.setTitle("Check", for: .normal)
+        button.setTitle("Check".localized, for: .normal)
         button.setTitleColor(UIColor.black, for: .normal)
         button.addTarget(self, action: #selector(checkAction), for: .touchUpInside)
         
         return button
     }()
     
+    private lazy var numberOfCurrentVerbLabel: UILabel = {
+        let label = UILabel()
+        label.backgroundColor = .systemGray5
+        label.font = .italicSystemFont(ofSize: 16)
+        label.textColor = .black
+        label.text = "Verb: ".localized + "\(count + 1)" + " from ".localized + "\(dataSource.count)"
+            
+        return label
+    }()
+    
+    private lazy var numberOfRightAnswersLabel: UILabel = {
+        let label = UILabel()
+        label.backgroundColor = .systemGray5
+        label.font = .italicSystemFont(ofSize: 16)
+        label.textColor = .black
+        label.text = "Score: ".localized + "\(rightAnswersCount)"
+            
+        return label
+    }()
+    
+    private lazy var skipButton: UIButton = {
+        let button = UIButton()
+        
+        button.layer.cornerRadius = 10
+        button.backgroundColor = .black
+        button.setTitle("Skip".localized, for: .normal)
+        button.setTitleColor(UIColor.systemGray5, for: .normal)
+        button.addTarget(self, action: #selector(skipAction), for: .touchUpInside)
+        
+        return button
+    }()
     
     //MARK: - Properties
     private let edgeInsets =   30
@@ -91,12 +126,14 @@ final class TrainViewController: UIViewController {
     private var count = 0 {
         didSet {
             infinitiveLabel.text = currentVerb?.infinitive
-            // numberOfCurrentVerbLabel.text = "\(count + 1) from \(dataSource.count)"
+            numberOfCurrentVerbLabel.text = "Verb: ".localized + "\(count + 1)" + " from ".localized + "\(dataSource.count)"
+            numberOfRightAnswersLabel.text = "Score: ".localized + "\(rightAnswersCount)"
             pastSimpleTextField.text = ""
             participleTextField.text = ""
         }
     }
-    // private var rightAnswersCount = 0
+    private var rightAnswersCount = 0
+    private var isPreviousAnswerRight = true
     
     //MARK: - Life cycle
     override func viewDidLoad() {
@@ -126,19 +163,77 @@ final class TrainViewController: UIViewController {
     
     @objc
     private func checkAction() {
-        if checkAnswers() {
-            count += 1
-            //      rightAnswersCount += 1
+        if currentVerb?.infinitive != dataSource.last?.infinitive {
+            if checkAnswers() {
+                if isPreviousAnswerRight {
+                    rightAnswersCount += 1
+                }
+                count += 1
+                isPreviousAnswerRight = true
+                checkButton.backgroundColor = .systemGray5
+                checkButton.setTitle("Check".localized, for: .normal)
+                checkButton.setTitleColor(UIColor.black, for: .normal)
+            } else {
+                checkButton.setTitle("Try again".localized,
+                                     for: .normal)
+                checkButton.backgroundColor = .red
+                isPreviousAnswerRight = false
+            }
         } else {
-            checkButton.setTitle("Try again".localized,
-                                 for: .normal)
-            checkButton.backgroundColor = .red
+            if checkAnswers() {
+                if isPreviousAnswerRight {
+                    rightAnswersCount += 1
+                }
+                numberOfRightAnswersLabel.text = "Score: ".localized + "\(rightAnswersCount)"
+                let alert = UIAlertController(title: "The end of selected verbs".localized,
+                                              message: "Your score is ".localized + "\(rightAnswersCount). " + "You can choose other verbs and train again!".localized,
+                                              preferredStyle: .alert)
+                let action = UIAlertAction(title: "Back to the homepage".localized , style: .default) { (action) in
+                    self.navigationController?.popViewController(animated: true)
+                }
+                alert.addAction(action)
+                
+                present(alert, animated: true)
+            } else {
+                checkButton.setTitle("Try again".localized,
+                                     for: .normal)
+                checkButton.backgroundColor = .red
+                isPreviousAnswerRight = false
+            }
+        }
+    }
+    
+    @objc
+    private func skipAction() {
+        if currentVerb?.infinitive == dataSource.last?.infinitive {
+            
+            let alert = UIAlertController(title: "Let's remember!".localized,
+                                          message: "Past Simple form: \(currentVerb?.pastSimple ?? ""). \n Past Participle form: \(currentVerb?.participle ?? ""). \n" + "That was last verb.".localized + "\n" + "Your score is ".localized + "\(rightAnswersCount). \n" + "You can choose other verbs and train again!".localized ,
+                                          preferredStyle: .alert)
+            let action = UIAlertAction(title: "Back to the homepage".localized , style: .default) { (action) in
+                self.navigationController?.popViewController(animated: true)
+            }
+            alert.addAction(action)
+            present(alert, animated: true)
+            
+        } else {
+            let alert = UIAlertController(title: "Let's remember!".localized,
+                                          message: "Past Simple form: \(currentVerb?.pastSimple ?? ""). \n Past Participle form: \(currentVerb?.participle ?? "").",
+                                          preferredStyle: .alert)
+            let action = UIAlertAction(title: "Next verb".localized , style: .default) { (action) in
+                self.count += 1
+            }
+            alert.addAction(action)
+            
+            present(alert, animated: true)
+            
+            isPreviousAnswerRight = false
         }
     }
     
     private func checkAnswers() -> Bool {
-        return pastSimpleTextField.text?.lowercased() == currentVerb?.pastSimple.lowercased() &&
-        participleTextField.text?.lowercased() == currentVerb?.participle.lowercased()
+        return pastSimpleTextField.text?.lowercased().trimmingCharacters(in: .whitespacesAndNewlines) == currentVerb?.pastSimple.lowercased() &&
+        participleTextField.text?.lowercased().trimmingCharacters(in: .whitespacesAndNewlines) == currentVerb?.participle.lowercased()
     }
     
     private func setupUI() {
@@ -147,13 +242,15 @@ final class TrainViewController: UIViewController {
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
         contentView.addSubViews([
-            // numberOfCurrentVerbLabel,
+            numberOfCurrentVerbLabel,
+            numberOfRightAnswersLabel,
             infinitiveLabel,
             pastSimpleLabel,
             pastSimpleTextField,
             participleLabel,
             participleTextField,
-            checkButton])
+            checkButton,
+            skipButton])
         
         setupConstraints()
     }
@@ -197,6 +294,22 @@ final class TrainViewController: UIViewController {
             make.trailing.leading.equalToSuperview().inset(edgeInsets)
         }
         
+        numberOfCurrentVerbLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().inset(70)
+            make.leading.equalToSuperview().inset(edgeInsets)
+            make.width.equalTo(130)
+        }
+        
+       numberOfRightAnswersLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().inset(70)
+            make.trailing.equalToSuperview().inset(edgeInsets)
+            make.width.equalTo(70)
+        }
+        
+        skipButton.snp.makeConstraints { make in
+            make.top.equalTo(checkButton.snp.bottom).offset(10)
+            make.trailing.leading.equalToSuperview().inset(edgeInsets)
+        }
     }
 }
 //MARK: - UITextFieldDelegate
