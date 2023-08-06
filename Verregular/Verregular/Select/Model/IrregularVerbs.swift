@@ -35,6 +35,5 @@ final class IrregularVerbs {
             Verb(infinitive: "break", pastSimple: "broke", participle: "broken"),
             Verb(infinitive: "set", pastSimple: "set", participle: "set"),
         ]
-        selectedVerbs = verbs
     }
 }
