@@ -163,71 +163,73 @@ final class TrainViewController: UIViewController {
     
     @objc
     private func checkAction() {
+        if checkAnswers() {
+            changeRightAnswersCount(isPreviousAnswerRight: isPreviousAnswerRight)
         if currentVerb?.infinitive != dataSource.last?.infinitive {
-            if checkAnswers() {
-                if isPreviousAnswerRight {
-                    rightAnswersCount += 1
-                }
                 count += 1
                 isPreviousAnswerRight = true
                 checkButton.backgroundColor = .systemGray5
                 checkButton.setTitle("Check".localized, for: .normal)
                 checkButton.setTitleColor(UIColor.black, for: .normal)
             } else {
-                checkButton.setTitle("Try again".localized,
-                                     for: .normal)
-                checkButton.backgroundColor = .red
-                isPreviousAnswerRight = false
+                numberOfRightAnswersLabel.text = "Score: ".localized + "\(rightAnswersCount)"
+                showAlert(titleController: "The end of selected verbs".localized,
+                          messageController: "Your score is ".localized + "\(rightAnswersCount). \n" +
+                          "You can choose other verbs and train again!".localized,
+                          titleButton: "Back to the homepage".localized,
+                          isLastVerb: true)
             }
         } else {
-            if checkAnswers() {
-                if isPreviousAnswerRight {
-                    rightAnswersCount += 1
-                }
-                numberOfRightAnswersLabel.text = "Score: ".localized + "\(rightAnswersCount)"
-                let alert = UIAlertController(title: "The end of selected verbs".localized,
-                                              message: "Your score is ".localized + "\(rightAnswersCount). " + "You can choose other verbs and train again!".localized,
-                                              preferredStyle: .alert)
-                let action = UIAlertAction(title: "Back to the homepage".localized , style: .default) { (action) in
-                    self.navigationController?.popViewController(animated: true)
-                }
-                alert.addAction(action)
-                
-                present(alert, animated: true)
-            } else {
-                checkButton.setTitle("Try again".localized,
-                                     for: .normal)
-                checkButton.backgroundColor = .red
-                isPreviousAnswerRight = false
-            }
-        }
+            checkButton.setTitle("Try again".localized,
+                                 for: .normal)
+            checkButton.backgroundColor = .red
+            isPreviousAnswerRight = false        }
     }
     
     @objc
     private func skipAction() {
         if currentVerb?.infinitive == dataSource.last?.infinitive {
-            
-            let alert = UIAlertController(title: "Let's remember!".localized,
-                                          message: "Past Simple form: \(currentVerb?.pastSimple ?? ""). \n Past Participle form: \(currentVerb?.participle ?? ""). \n" + "That was last verb.".localized + "\n" + "Your score is ".localized + "\(rightAnswersCount). \n" + "You can choose other verbs and train again!".localized ,
-                                          preferredStyle: .alert)
-            let action = UIAlertAction(title: "Back to the homepage".localized , style: .default) { (action) in
-                self.navigationController?.popViewController(animated: true)
-            }
-            alert.addAction(action)
-            present(alert, animated: true)
-            
+            showAlert(titleController: "Let's remember!".localized,
+                      messageController: "Past Simple form: \(currentVerb?.pastSimple ?? ""). \n Past Participle form: \(currentVerb?.participle ?? ""). \n" +
+                      "That was last verb.".localized + "\n" +
+                      "Your score is ".localized + "\(rightAnswersCount). \n" +
+                      "You can choose other verbs and train again!".localized,
+                      titleButton: "Back to the homepage".localized,
+                      isLastVerb: true)
         } else {
-            let alert = UIAlertController(title: "Let's remember!".localized,
-                                          message: "Past Simple form: \(currentVerb?.pastSimple ?? ""). \n Past Participle form: \(currentVerb?.participle ?? "").",
-                                          preferredStyle: .alert)
-            let action = UIAlertAction(title: "Next verb".localized , style: .default) { (action) in
+            showAlert(titleController: "Let's remember!".localized,
+                      messageController: "Past Simple form: \(currentVerb?.pastSimple ?? ""). \n Past Participle form: \(currentVerb?.participle ?? "").",
+                      titleButton: "Next verb".localized,
+                      isLastVerb: false)
+            isPreviousAnswerRight = true
+        }
+        checkButton.backgroundColor = .systemGray5
+        checkButton.setTitle("Check".localized, for: .normal)
+        checkButton.setTitleColor(UIColor.black, for: .normal)
+    }
+    
+    private func showAlert(titleController: String,
+                           messageController: String,
+                           titleButton: String,
+                           isLastVerb: Bool) {
+        let alert = UIAlertController(title: titleController,
+                                      message: messageController,
+                                      preferredStyle: .alert)
+        let action = UIAlertAction(title: titleButton,
+                                   style: .default) { (action) in
+            if isLastVerb {
+                self.navigationController?.popViewController(animated: true)
+            } else {
                 self.count += 1
             }
-            alert.addAction(action)
-            
-            present(alert, animated: true)
-            
-            isPreviousAnswerRight = false
+        }
+        alert.addAction(action)
+        present(alert, animated: true)
+    }
+    
+    private func changeRightAnswersCount(isPreviousAnswerRight: Bool) {
+        if isPreviousAnswerRight {
+            rightAnswersCount += 1
         }
     }
     
@@ -358,7 +360,7 @@ private extension TrainViewController {
     
     @objc
     func keyboardWillHide() {
-        scrollView.contentInset.bottom = .zero - 50
+        scrollView.contentInset.bottom = .zero - 100
     }
     
     func hideKeyboardWhenTappedAround() {

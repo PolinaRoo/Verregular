@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		388505D52A815FB800A35808 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 388505D42A815FB800A35808 /* SnapKit */; };
 		38DC91B02A77CD3300121998 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DC91AF2A77CD3300121998 /* AppDelegate.swift */; };
 		38DC91B42A77CD3300121998 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DC91B32A77CD3300121998 /* HomeViewController.swift */; };
 		38DC91B92A77CD3400121998 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 38DC91B82A77CD3400121998 /* Assets.xcassets */; };
@@ -15,7 +16,6 @@
 		38DC91CA2A77DB4200121998 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 38DC91CC2A77DB4200121998 /* Localizable.strings */; };
 		38DC91CF2A785B8500121998 /* SelectVerbsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DC91CE2A785B8500121998 /* SelectVerbsViewController.swift */; };
 		38DC91D12A785BAC00121998 /* TrainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DC91D02A785BAC00121998 /* TrainViewController.swift */; };
-		38DC91D62A785F3700121998 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 38DC91D52A785F3700121998 /* SnapKit */; };
 		38DC91F82A79299500121998 /* SelectVerbTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DC91F72A79299500121998 /* SelectVerbTableViewCell.swift */; };
 		38DC91FA2A793C8800121998 /* UIView+Ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DC91F92A793C8800121998 /* UIView+Ex.swift */; };
 		38DC91FC2A793D5700121998 /* UIStackView+Ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DC91FB2A793D5700121998 /* UIStackView+Ex.swift */; };
@@ -47,7 +47,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				38DC91D62A785F3700121998 /* SnapKit in Frameworks */,
+				388505D52A815FB800A35808 /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -172,7 +172,7 @@
 			);
 			name = Verregular;
 			packageProductDependencies = (
-				38DC91D52A785F3700121998 /* SnapKit */,
+				388505D42A815FB800A35808 /* SnapKit */,
 			);
 			productName = Verregular;
 			productReference = 38DC91AC2A77CD3300121998 /* Verregular.app */;
@@ -204,7 +204,7 @@
 			);
 			mainGroup = 38DC91A32A77CD3300121998;
 			packageReferences = (
-				38DC91D42A785F3700121998 /* XCRemoteSwiftPackageReference "SnapKit" */,
+				388505D32A815FB800A35808 /* XCRemoteSwiftPackageReference "SnapKit" */,
 			);
 			productRefGroup = 38DC91AD2A77CD3300121998 /* Products */;
 			projectDirPath = "";
@@ -465,20 +465,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		38DC91D42A785F3700121998 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+		388505D32A815FB800A35808 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.0.0;
+				branch = develop;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		38DC91D52A785F3700121998 /* SnapKit */ = {
+		388505D42A815FB800A35808 /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 38DC91D42A785F3700121998 /* XCRemoteSwiftPackageReference "SnapKit" */;
+			package = 388505D32A815FB800A35808 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
 		};
 /* End XCSwiftPackageProductDependency section */
